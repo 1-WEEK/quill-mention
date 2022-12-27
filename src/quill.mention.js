@@ -696,7 +696,7 @@ class Mention {
     return textBeforeCursorPos;
   }
 
-  onSomethingChange() {
+  onSomethingChange(triggerEvent) {
     const range = this.quill.getSelection();
     if (range == null) return;
 
@@ -733,7 +733,7 @@ class Mention {
         };
         this.existingSourceExecutionToken = sourceRequestToken;
         if (this.options.positioningStrategy === "custom") {
-          this.showMentionList();
+          if (triggerEvent !== "onSelectionChange") this.showMentionList();
         } else
           this.options.source(
             textAfter,
@@ -770,13 +770,13 @@ class Mention {
 
   onTextChange(delta, oldDelta, source) {
     if (source === "user") {
-      this.onSomethingChange();
+      this.onSomethingChange("onTextChange");
     }
   }
 
   onSelectionChange(range) {
     if (range && range.length === 0) {
-      this.onSomethingChange();
+      this.onSomethingChange("onSelectionChange");
     } else {
       this.hideMentionList();
     }
